@@ -1,0 +1,26 @@
+#
+# Wyjebongo Style
+#
+---
+ColumnLimit: 160
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+---
+Language: Cpp
+AccessModifierOffset: -4
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterControlStatement: Never
+  AfterClass: true
+BreakConstructorInitializers: BeforeComma
+IndentAccessModifiers: false
+IndentCaseLabels: true
+InsertBraces: true
+PointerAlignment: Left
+ReferenceAlignment: Left
+SpaceAfterTemplateKeyword: false
+SpacesBeforeTrailingComments: 2
