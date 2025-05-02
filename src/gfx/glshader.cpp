@@ -22,7 +22,8 @@ GLuint compileShader(GLuint shaderType, std::string_view shader)
         glGetShaderInfoLog(shaderId, errorMessage.size(), &logLength, errorMessage.data());
 
         glDeleteShader(shaderId);
-        std::string_view errorMessageHeader = (shaderType == GL_VERTEX_SHADER) ? "GLSL vertex shader compilation failed: " : "GLSL fragment shader compilation failed: ";
+        std::string_view errorMessageHeader =
+            (shaderType == GL_VERTEX_SHADER) ? "GLSL vertex shader compilation failed: " : "GLSL fragment shader compilation failed: ";
         throw std::runtime_error{std::string{errorMessageHeader} + errorMessage};
     }
 
@@ -85,6 +86,13 @@ GLShader::~GLShader()
 
 void GLShader::use() { glUseProgram(_glProgram); }
 
-GLShader::UniformLocation GLShader::getUniformLocation(std::string_view name) { return glGetUniformLocation(_glProgram, name.data()); }
+GLShader::UniformLocation GLShader::getUniformLocation(std::string_view name)
+{
+    const auto loc = glGetUniformLocation(_glProgram, name.data());
+    if (loc == -1) {
+        throw std::runtime_error{"GLSL uniform location not found: '" + std::string{name} + "'"};
+    }
+    return loc;
+}
 
 void GLShader::setUniform(UniformLocation location, const mat4& value) { glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]); }

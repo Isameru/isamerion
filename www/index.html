@@ -1,53 +1,133 @@
+<!--
+    Isamerion :: https://isameru.pl
+    N-Body Relativistic Gravity Simulator
+-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> -->
     <title>Isamerion</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
 
 <body>
     <noscript>This page contains WebAssembly content and requires JavaScript support.</noscript>
     <style>
-            body,
-            html {
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                width: 100%;
-                height: 100%;
-                background-color: darkslategray;
-            }
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background-color: rgb(52, 52, 60);
+        }
 
-            canvas {
-                display: block;
-                width: 100%;
-                height: 100%;
-            }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        #options-btn {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            z-index: 1;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            padding: 2px;
+            background: rgb(52, 52, 60, 0.5);
+        }
+
+        #gear-icon {
+            transition: transform 0.3s ease;
+        }
+
+        #about-btn {
+            position: absolute;
+            top: 6px;
+            left: 62px;
+            z-index: 1;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            padding: 2px;
+            background: rgb(52, 52, 60, 0.5);
+            color: white;
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            font-size: 40px;
+            font-style: italic;
+        }
+
+        #about-box {
+            position: absolute;
+            top: 62px;
+            left: 6px;
+            z-index: 1;
+            width: 50%;
+            /*height: 200px;*/
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgb(52, 52, 60, 0.5);
+            color: white;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: large;
+            display: none;
+        }
+
+        #fullscreen-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            z-index: 1;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            padding: 2px;
+            background: rgb(52, 52, 60, 0.5);
+        }
     </style>
 
     <canvas id="canvas"></canvas>
 
-    <script type="text/javascript">
-        canvas = document.getElementById("canvas");
+    <button type="button" id="options-btn" aria-label="Simulation options">
+        <img id="gear-icon" src="assets/gear-icon.svg" width="100%" height="100%" alt="">
+    </button>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-            canvas.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-        }
+    <button type="button" id="about-btn" aria-label="About this simulation">i</button>
 
-        // Call the resizeCanvas() function whenever the window is resized.
-        window.addEventListener('resize', resizeCanvas, false);
+    <div id="about-box">
+        <p>
+            This is a web demo of N-body gravity simulation.
+            Unlike its classical variant, this one incorporates elements of general relativty.
+            The visualization itself shows the moving bodies - colorful stars - at their immediate positions relative to
+            a static observer, as if light travels at infinite speed, without bending.
+            However, the gravity attraction propagates at the finite speed, which is a maximum speed any simulation body
+            can reach, governed by Lorentz transformation.
+            This is a mere approximation to the general theory of relativity formulated by Einstein, but affects the
+            movement patterns greatly, strikingly aligning the movements of the bodies.
+        </p>
+        <p>
+            The sources of this demo are available here: <a
+                href="https://github.com/Isameru/isamerion">https://github.com/Isameru/isamerion</a> .
+            The simulation is written in C++ and compiled to WebAssembly using Emscripten, but you can compile and run
+            it on Windows (using Visual Studio) and Linux or WSL (using GCC).
+        </p>
+    </div>
 
-        // Also call the resizeCanvas() function immediately to set the initial canvas size.
-        resizeCanvas();
+    <button type="button" id="fullscreen-btn" aria-label="Toggle fullscreen mode">
+        <img src="assets/fullscreen-icon.svg" width="100%" height="100%" alt="">
+    </button>
 
-        // Define the Module for the WebAssembly loader.
-        var Module = {
-            canvas: canvas
-        };
-    </script>
+    <script type="text/javascript" src="main.js"></script>
     <script async type="text/javascript" src="../_build-em/isamerion.js"></script>
 </body>
 

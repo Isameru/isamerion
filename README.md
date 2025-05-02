@@ -1,8 +1,13 @@
 
-# *Isamerion* :: A collection of loosely-coupled C++ files
+# *Isamerion* :: N-body relativistic gravity simulation
 
-This toy project is intended to be featured on my personal website.
-Nothing particularly interesting at the moment.
+A toy project is intended to be featured on my personal website: https://isameru.pl
+
+This is a web demo of N-body gravity simulation.
+Unlike its classical variant, this one incorporates elements of general relativty.
+The visualization itself shows the moving bodies - colorful stars - at their immediate positions relative to a static observer, as if light travels at infinite speed, without bending.
+However, the gravity attraction propagates at the finite speed, which is a maximum speed any simulation body can reach, governed by Lorentz transformation.
+This is a mere approximation to the general theory of relativity formulated by Einstein, but affects the movement patterns greatly, strikingly aligning the movements of the bodies.
 
 ## Building from Sources
 

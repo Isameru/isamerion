@@ -17,7 +17,7 @@ public:
     GalaxyScene(DisplayWindow& displayWindow);
     ~GalaxyScene();
 
-    void onTick(float dt);
+    void onTick(uint64_t tickCount, float dt);
     void handleEvent(const SDL_Event& generalEvent);
 
 private:

@@ -14,14 +14,14 @@ public:
 private:
     const Options _options;
     SDL_Window*   _window = nullptr;
-    SDL_GLContext _context{};
+    SDL_GLContext _glContext{};
     ivec2         _screenSize;
 
 public:
     DisplayWindow(Options options);
     ~DisplayWindow();
 
-    SDL_GLContext glContext() const { return _context; }
+    SDL_GLContext glContext() const { return _glContext; }
     ivec2         screenSize() const { return _screenSize; }
 
     void startFrame();
