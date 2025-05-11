@@ -1,3 +1,17 @@
+/*
+    MIT License
+    Copyright (c) 2025 Mariusz Łapiński
+
+      ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+      ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+      ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+      ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+      ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+      ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+      ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+      █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+                                                                    ███    ███
+*/
 
 #pragma once
 
@@ -7,7 +21,9 @@
 
 class DisplayWindow;
 
-class GalaxyScene
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
+
+class GalaxyScene : public Singleton<GalaxyScene>
 {
     DisplayWindow& _displayWindow;
     GalaxyRenderer _galaxyRenderer;
@@ -17,9 +33,15 @@ public:
     GalaxyScene(DisplayWindow& displayWindow);
     ~GalaxyScene();
 
+    void spawnScenario(int scenarioId = 0);
+
     void onTick(uint64_t tickCount, float dt);
-    void handleEvent(const SDL_Event& generalEvent);
+    bool handleEvent(const SDL_Event& generalEvent);
 
 private:
     void handleKeyboardEvent(const SDL_KeyboardEvent& keyboardEvent);
+
+    void regenerateStarSizesAndColors();
 };
+
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---

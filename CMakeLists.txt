@@ -1,11 +1,38 @@
+#
+#   MIT License
+#   Copyright (c) 2025 Mariusz Łapiński
+#
+#     ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+#     ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+#     ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+#     ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+#     ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+#     ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+#     ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+#     █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+#                                                                   ███    ███
+#
 
 cmake_minimum_required(VERSION 3.20)
 project(isamerion
-    VERSION     0.0.1
+    VERSION     1.0.0
     DESCRIPTION "Isamerion"
     LANGUAGES   CXX)
 
-#set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+# ---―--―-――-―――-――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
+
+# GLM: OpenGL Mathematics
+# https://glm.g-truc.net/
+#
+include(FetchContent)
+FetchContent_Declare(
+	glm
+	GIT_REPOSITORY  https://github.com/g-truc/glm.git
+	GIT_TAG 	    1.0.1
+)
+FetchContent_MakeAvailable(glm)
+
+# ---―--―-――-―――-――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
 add_executable(isamerion
     src/core/clock.cpp
@@ -19,29 +46,16 @@ add_executable(isamerion
     src/main.cpp
 )
 
-# target_sources(isamerion
-#     PUBLIC
-#         FILE_SET CXX_MODULES FILES
-#             src/gluton.cppm
-# )
-
 set_property(TARGET isamerion PROPERTY CXX_STANDARD 23)
 target_include_directories(isamerion PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
-include(FetchContent)
-FetchContent_Declare(
-	glm
-	GIT_REPOSITORY  https://github.com/g-truc/glm.git
-	GIT_TAG 	    1.0.1
-)
-FetchContent_MakeAvailable(glm)
-
 if(DEFINED EMSCRIPTEN)
-    #
+
     # WebAssembly using Emscripten toolchain
     #
     set_target_properties(isamerion PROPERTIES SUFFIX ".js")
     set(EM_LINK_FLAGS
+        "--bind -s MODULARIZE -s EXPORT_NAME=\"Isamerion\""
         "--use-port=sdl2"
         "--use-port=sdl2_image"
         "--use-port=sdl2_ttf"
@@ -56,8 +70,9 @@ if(DEFINED EMSCRIPTEN)
     target_link_libraries(isamerion
         glm::glm-header-only
     )
+
 elseif(DEFINED MSVC)
-    #
+
     # Windows for Visual Studio
     #
     include(${PROJECT_SOURCE_DIR}/cmake/deps-win.cmake)
@@ -70,8 +85,9 @@ elseif(DEFINED MSVC)
         glm::glm-header-only
         opengl32
     )
+
 elseif(DEFINED UNIX)
-    #
+
     # GCC or clang on Linux
     #
     find_package(SDL2 REQUIRED)
@@ -85,6 +101,11 @@ elseif(DEFINED UNIX)
         glm::glm-header-only
         GL
     )
+
 else()
+
     message(FATAL_ERROR "Unsupported configuration: Tweak CMakeLists.txt manually.")
+
 endif()
+
+# ---―--―-――-―――-――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---

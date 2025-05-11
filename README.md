@@ -1,17 +1,17 @@
 
 # *Isamerion* :: N-body relativistic gravity simulation
 
-A toy project is intended to be featured on my personal website: https://isameru.pl
+A toy project intended to be featured on my personal website: https://isameru.pl
 
 This is a web demo of N-body gravity simulation.
 Unlike its classical variant, this one incorporates elements of general relativty.
 The visualization itself shows the moving bodies - colorful stars - at their immediate positions relative to a static observer, as if light travels at infinite speed, without bending.
-However, the gravity attraction propagates at the finite speed, which is a maximum speed any simulation body can reach, governed by Lorentz transformation.
-This is a mere approximation to the general theory of relativity formulated by Einstein, but affects the movement patterns greatly, strikingly aligning the movements of the bodies.
+However, the gravity attraction propagates at a finite speed, which is the maximum speed any simulation body can reach, governed by the Lorentz transformation.
+This is a mere approximation of the general theory of relativity formulated by Einstein, but subtly affects the movement patterns.
 
 ## Building from Sources
 
-_CMake_ is required to build the project in any configuration.
+_CMake_ is required to build the project in any configuration, as well as a modern C++ build toolchain.
 
 ### Building on Windows using Visual Studio
 
@@ -39,6 +39,6 @@ make -j
 ```
 . ~/emsdk/emsdk_env.sh
 mkdir _build-wasm && cd _build-wasm
-emcmake cmake ..
-make -j
+emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j || make
 ```

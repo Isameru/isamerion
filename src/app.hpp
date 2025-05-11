@@ -1,3 +1,17 @@
+/*
+    MIT License
+    Copyright (c) 2025 Mariusz Łapiński
+
+      ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+      ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+      ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+      ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+      ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+      ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+      ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+      █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+                                                                    ███    ███
+*/
 
 #pragma once
 
@@ -8,6 +22,8 @@
 
 // ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
+// RAII-like SDL initializer and cleaner used in `App`.
+//
 class SdlInitializer
 {
 public:
@@ -17,17 +33,18 @@ public:
 
 // ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
+// The main application class that manages the SDL context, display window, and the main loop with the rendering and physics.
+//
 class App : Singleton<App>
 {
     SdlInitializer _sdlInitializer;
     DisplayWindow  _displayWindow;
-    GalaxyScene    _galaxyScene;  // Cannot outlive _renderer
+    GalaxyScene    _galaxyScene;  // Cannot outlive `_displayWindow`
 
     Clock::time_point _startTime{};
     Clock::time_point _lastTickTime{};
     uint64_t          _tickCount     = 0;
     bool              _quitRequested = false;
-    // std::bitset<SDL_NUM_SCANCODES> _pressedKeyScancodes;
 
 public:
     App();

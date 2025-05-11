@@ -1,7 +1,27 @@
+/*
+    MIT License
+    Copyright (c) 2025 Mariusz Łapiński
+
+      ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+      ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+      ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+      ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+      ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+      ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+      ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+      █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+                                                                    ███    ███
+*/
 
 #pragma once
 
 #include "deps.hpp"
+
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
+
+// Aliases for the most prevalent rudimentary types in C++.
+template<typename... TX> using uptr   = std::unique_ptr<TX...>;
+template<typename... TX> using vector = std::vector<TX...>;
 
 using vec2  = glm::vec2;
 using ivec2 = glm::ivec2;
@@ -13,11 +33,13 @@ using mat4  = glm::mat4;
 [[noreturn]] inline void throwSdlError() { throw std::runtime_error{SDL_GetError()}; }
 [[noreturn]] inline void throwTtfError() { throw std::runtime_error{TTF_GetError()}; }
 
-// using TexturePtr = std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)>;
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
-template<typename... TX> using uptr   = std::unique_ptr<TX...>;
-template<typename... TX> using vector = std::vector<TX...>;
-
+// A singleton class template that provides a global access to a single instance of the attributed class.
+//
+// Usage:
+//      class MyService : public Singleton<MyService> { ... };
+//
 template<typename T> class Singleton
 {
 protected:
@@ -47,3 +69,5 @@ private:
         return ptr;
     }
 };
+
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---

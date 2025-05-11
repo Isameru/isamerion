@@ -1,3 +1,17 @@
+/*
+    MIT License
+    Copyright (c) 2025 Mariusz Łapiński
+
+      ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+      ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+      ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+      ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+      ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+      ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+      ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+      █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+                                                                    ███    ███
+*/
 
 #include "nbody/galaxy_renderer.hpp"
 
@@ -51,9 +65,15 @@ std::string_view SpaceDomeRenderer::fragmentShader()
            "}";
 }
 
+// Creates a sphere-like polyhedron by recursively subdividing a tetrahedron's faces into smaller triangles.
+// Returns a vector of vertices groupped with triples (faces).
+//
 std::vector<vec3> SpaceDomeRenderer::makeSphereVertices(int tesselationLevel)
 {
     std::vector<vec3> vertices;
+
+    // Primary 4 faces, each face has 3 vertices, and each face subdivided `tesselationLevel` times into 4.
+    vertices.reserve(3 * 4 * (1 << (2 * tesselationLevel)));
 
     std::function<void(int, vec3, vec3, vec3)> makeSegmentFn;
     makeSegmentFn = [&](int level, vec3 p0, vec3 p1, vec3 p2) {
@@ -75,6 +95,7 @@ std::vector<vec3> SpaceDomeRenderer::makeSphereVertices(int tesselationLevel)
         }
     };
 
+    // See: https://en.wikipedia.org/wiki/Tetrahedron#/media/File:Tetraeder_animation_with_cube.gif
     makeSegmentFn(tesselationLevel, vec3{-1.0f, +1.0f, -1.0f}, vec3{+1.0f, +1.0f, +1.0f}, vec3{+1.0f, -1.0f, -1.0f});
     makeSegmentFn(tesselationLevel, vec3{-1.0f, +1.0f, -1.0f}, vec3{+1.0f, +1.0f, +1.0f}, vec3{-1.0f, -1.0f, +1.0f});
     makeSegmentFn(tesselationLevel, vec3{+1.0f, -1.0f, -1.0f}, vec3{-1.0f, -1.0f, +1.0f}, vec3{-1.0f, +1.0f, -1.0f});
@@ -88,7 +109,7 @@ std::vector<vec3> SpaceDomeRenderer::makeSphereVertices(int tesselationLevel)
 StarRenderer::StarRenderer()
     : _shader{vertexShader(), fragmentShader()}
     , _shaderViewTransformLocation{_shader.getUniformLocation("viewTransform")}
-    , _shaderProjectionTransformLocation{_shader.getUniformLocation("projectionTransform")}  //, _shaderColorLocation{_shader.getUniformLocation("color")}
+    , _shaderProjectionTransformLocation{_shader.getUniformLocation("projectionTransform")}
     , _quadVertexBuffer{GL_ARRAY_BUFFER}
     , _particlePosBuffer{GL_ARRAY_BUFFER}
     , _particleSizeBuffer{GL_ARRAY_BUFFER}
@@ -121,13 +142,8 @@ void StarRenderer::updateColors(const vector<vec3>& particleColors)
 
 void StarRenderer::draw(const mat4& viewMat, const mat4& projMat)
 {
-    if (_particlePositionsUpdated != _particleSizesUpdated) {
-        throw std::runtime_error{"Mismatch in number of update particle positions and sizes"};
-    }
-
-    if (_particlePositionsUpdated != _particleColorsUpdated) {
-        throw std::runtime_error{"Mismatch in number of update particle positions and colors"};
-    }
+    assert(_particlePositionsUpdated == _particleSizesUpdated && "Mismatch in number of update particle positions and sizes");
+    assert(_particlePositionsUpdated == _particleColorsUpdated && "Mismatch in number of update particle positions and colors");
 
     _shader.use();
 
@@ -174,7 +190,6 @@ std::string_view StarRenderer::vertexShader()
            "out highp vec3 StarColor;\n"
            "void main() {\n"
            "    gl_Position = projectionTransform * (viewTransform * vec4(aParticlePos, 1.0) + vec4(aPos * aParticleSize, 0.0, 0.0));\n"
-           //"    TexCoord = aPos + vec2(0.5, 0.5);\n"
            "    TexCoord = 2.0 * aPos;\n"
            "    StarColor = aParticleColor;\n"
            "}";
@@ -190,14 +205,9 @@ std::string_view StarRenderer::fragmentShader()
            "    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);\n"
            "}\n"
            "void main() {\n"
-           //"    highp vec4 c = texture(particleTexture, TexCoord);\n"
-           //"    if (c[3] < 0.5) discard;\n"
-
            "    highp float r = dot(TexCoord, TexCoord);\n"
-           "    highp float rd = rand(vec2(rand(gl_FragCoord.xy), rand(gl_FragCoord.zw)));\n"
-           //"    if (r*r*r > rd) discard;\n"
            "    if (r > 1.0) discard;\n"
-           //"    out_color = vec4(20.0f * gl_FragCoord.w * vec3(1.0f, 1.0f, 1.0f), 1.0f);\n"
+           "    highp float rd = rand(vec2(rand(gl_FragCoord.xy), rand(gl_FragCoord.zw)));\n"
            "    highp vec3 star_color = StarColor * (1.0 + 0.85 * (r + rd));"
            "    if (r > 0.9) star_color = 10.0 * (1.0 - r) * star_color;\n"
            "    out_color = vec4(star_color, 1.0);\n"
@@ -212,14 +222,9 @@ SonarRenderer::SonarRenderer()
     , _coordSystemVertexBuffer{GL_ARRAY_BUFFER}
     , _circleVertexBuffer{GL_ARRAY_BUFFER}
 {
-    auto coordSystemVertices = std::vector<vec3>{};
-    coordSystemVertices.reserve(COORD_SYSTEM_VERTEX_COUNT);
-    coordSystemVertices.push_back(vec3{-10.0f, 0.0f, 0.0f});
-    coordSystemVertices.push_back(vec3{10.0f, 0.0f, 0.0f});
-    coordSystemVertices.push_back(vec3{0.0f, -10.0f, 0.0f});
-    coordSystemVertices.push_back(vec3{0.0f, 10.0f, 0.0f});
-    coordSystemVertices.push_back(vec3{0.0f, 0.0f, -10.0f});
-    coordSystemVertices.push_back(vec3{0.0f, 0.0f, 10.0f});
+    auto coordSystemVertices = std::vector<vec3>{
+        {-10.0f, 0.0f, 0.0f}, {+10.0f, 0.0f, 0.0f}, {0.0f, -10.0f, 0.0f}, {0.0f, +10.0f, 0.0f}, {0.0f, 0.0f, -10.0f}, {0.0f, 0.0f, +10.0f},
+    };
     _coordSystemVertexBuffer.setData(coordSystemVertices);
 
     auto circleVertices = std::vector<vec3>{};
@@ -287,7 +292,7 @@ void GalaxyRenderer::setSonarRadius(float radius) { _sonarRenderer.setSonarRadiu
 
 void GalaxyRenderer::updateParticlePositions(const vector<vec3>& particlePositions)
 {
-    _galaxyCenter = particlePositions[0];
+    _galaxyCenter = particlePositions.empty() ? vec3{} : particlePositions[0];
     _starRenderer.updatePositions(particlePositions);
 }
 
@@ -304,16 +309,13 @@ void GalaxyRenderer::draw()
     glClear(GL_DEPTH_BUFFER_BIT);
 
     glDisable(GL_DEPTH_TEST);
-
     const float radius   = 100.0f;
     const auto  modelMat = glm::scale(mat4{1.0f}, radius * vec3(1.0f, 1.0f, 1.0f));
     _spaceDomeRenderer.draw(projectionMat * viewMat * modelMat);
 
     glEnable(GL_DEPTH_TEST);
-
     _starRenderer.draw(viewMat, projectionMat);
-
-    _sonarRenderer.draw(projectionMat * viewMat * glm::scale(mat4{1.0f}, 2.0f * vec3{1.0f, 1.0f, 1.0f}));
+    _sonarRenderer.draw(projectionMat * viewMat);
 }
 
 // ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---

@@ -1,3 +1,17 @@
+/*
+    MIT License
+    Copyright (c) 2025 Mariusz Łapiński
+
+      ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+      ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+      ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+      ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+      ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+      ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+      ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+      █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+                                                                    ███    ███
+*/
 
 #include "app.hpp"
 
@@ -65,29 +79,6 @@ void App::onTick()
     const auto tickStartTime   = Clock::now();
     const auto elapsedDuration = tickStartTime - _lastTickTime;
 
-    // for (int i = 0; i < 10000; ++i) {
-    //     std::cout << (Clock::now() - tickStartTime).count() << std::endl;
-    // }
-
-    // _quitRequested = true;
-    // return;
-
-    // {
-    //     auto time0 = Clock::now();
-    //     auto time1 = Clock::now();
-    //     int  cnt   = 10000;
-    //     for (int i = 0; i < cnt - 1; ++i) {
-    //         time1 = Clock::now();
-    //     }
-    //     const auto elapsedNs = std::chrono::duration_cast<std::chrono::nanoseconds>(time1 - time0).count();
-    //     std::cout << "Clock::now(): " << static_cast<double>(elapsedNs) / (double)cnt << " ns" << std::endl;
-    // }
-
-    // if (_tickCount % 60 == 0) {
-    //     const auto elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(nowTime - _startTime).count();
-    //     std::cout << "FPS: " << 1000.0 * static_cast<double>(_tickCount) / (static_cast<double>(elapsedMs) + 1) << std::endl;
-    // }
-
     handleEvents();
     if (_quitRequested) {
         return;
@@ -97,12 +88,6 @@ void App::onTick()
 
     _lastTickTime = tickStartTime;
 
-    if (_tickCount % 30 == 0) {
-        const auto tickEndTime = Clock::now();
-        std::cout << "Tick time: " << std::chrono::duration_cast<std::chrono::microseconds>(tickEndTime - tickStartTime).count() << " us" << std::endl;
-        std::cout << "------------------------------" << std::endl;
-    }
-
     ++_tickCount;
 }
 
@@ -110,11 +95,12 @@ void App::handleEvents()
 {
     SDL_Event event{};
     while (SDL_PollEvent(&event)) {
-        _galaxyScene.handleEvent(event);
         if (event.type == SDL_QUIT) {
             _quitRequested = true;
             return;
         }
+
+        _galaxyScene.handleEvent(event);
     }
 }
 

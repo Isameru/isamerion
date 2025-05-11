@@ -73,13 +73,14 @@
             left: 6px;
             z-index: 1;
             width: 50%;
-            /*height: 200px;*/
-            padding: 10px;
+            max-height: 80%;
+            overflow-y: auto;
+            padding: 4px;
             border-radius: 8px;
             background-color: rgb(52, 52, 60, 0.5);
             color: white;
-            font-family: 'Ubuntu', sans-serif;
-            font-size: large;
+            font-family: 'Trebuchet MS', sans-serif;
+            font-size: medium;
             display: none;
         }
 
@@ -102,7 +103,13 @@
         <img id="gear-icon" src="assets/gear-icon.svg" width="100%" height="100%" alt="">
     </button>
 
-    <button type="button" id="about-btn" aria-label="About this simulation">i</button>
+    <button type="button" id="about-btn" aria-label="About this simulation">
+        i
+    </button>
+
+    <button type="button" id="fullscreen-btn" aria-label="Toggle fullscreen mode">
+        <img src="assets/fullscreen-icon.svg" width="100%" height="100%" alt="">
+    </button>
 
     <div id="about-box">
         <p>
@@ -110,25 +117,19 @@
             Unlike its classical variant, this one incorporates elements of general relativty.
             The visualization itself shows the moving bodies - colorful stars - at their immediate positions relative to
             a static observer, as if light travels at infinite speed, without bending.
-            However, the gravity attraction propagates at the finite speed, which is a maximum speed any simulation body
-            can reach, governed by Lorentz transformation.
-            This is a mere approximation to the general theory of relativity formulated by Einstein, but affects the
-            movement patterns greatly, strikingly aligning the movements of the bodies.
+            However, the gravity attraction propagates at a finite speed, which is the maximum speed any simulation body
+            can reach, governed by the Lorentz transformation.
+            This is a mere approximation of the general theory of relativity formulated by Einstein, but subtly affects the movement patterns.
         </p>
         <p>
-            The sources of this demo are available here: <a
-                href="https://github.com/Isameru/isamerion">https://github.com/Isameru/isamerion</a> .
+            The sources of this demo are available here: <a href="https://github.com/Isameru/isamerion">https://github.com/Isameru/isamerion</a> .
             The simulation is written in C++ and compiled to WebAssembly using Emscripten, but you can compile and run
             it on Windows (using Visual Studio) and Linux or WSL (using GCC).
         </p>
     </div>
 
-    <button type="button" id="fullscreen-btn" aria-label="Toggle fullscreen mode">
-        <img src="assets/fullscreen-icon.svg" width="100%" height="100%" alt="">
-    </button>
-
-    <script type="text/javascript" src="main.js"></script>
-    <script async type="text/javascript" src="../_build-em/isamerion.js"></script>
+    <script defer type="text/javascript" src="../_build-em/isamerion.js"></script>
+    <script defer type="text/javascript" src="main.js"></script>
 </body>
 
 </html>

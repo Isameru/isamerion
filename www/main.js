@@ -1,14 +1,42 @@
+/*
+    MIT License
+    Copyright (c) 2025 Mariusz Łapiński
 
-// -----------------------------------------------------------------------------------------------
+      ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+      ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+      ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+      ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+      ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+      ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+      ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+      █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+                                                                    ███    ███
+*/
 
 const canvas = document.getElementById("canvas");
 
-// Define the Module for the WebAssembly loader.
-var Module = {canvas : canvas};
+// Load the WebAssembly module.
+isamerionModule = null;
+Isamerion({ canvas: canvas }).then((Module) => {
+    console.log("Isamerion WASM module loaded");
+    isamerionModule = Module;
+});
 
-// -----------------------------------------------------------------------------------------------
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
+
+// Check if the device is an Apple system (iOS or macOS), where wake lock and fullscreen are blocked for ordinary web pages.
+function isAppleSystem() {
+    if (navigator.userAgentData && navigator.userAgentData.platform) {
+        const platform = navigator.userAgentData.platform;
+        return platform.includes("Mac") || platform.includes("iPhone") || platform.includes("iPad") || platform.includes("iOS");
+    } else {
+        return /Mac|iPod|iPhone|iPad/.test(navigator.platform) || (navigator.userAgent.includes("Mac") && 'ontouchend' in document);
+    }
+}
+
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 // Canvas resizing
-// -----------------------------------------------------------------------------------------------
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
 // Sets the canvas size to fill the window.
 function resizeCanvas() {
@@ -22,9 +50,9 @@ window.addEventListener('resize', resizeCanvas, false);
 // Also call resizeCanvas() immediately to set the initial canvas size.
 resizeCanvas();
 
-// -----------------------------------------------------------------------------------------------
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 // Fullscreen and wake lock
-// -----------------------------------------------------------------------------------------------
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
 const fullscreenBtn = document.getElementById("fullscreen-btn");
 let wakeLock = null;
@@ -57,50 +85,57 @@ async function requestWakeLock() {
     }
 }
 
-// Set up the fullscreen button.
-fullscreenBtn.addEventListener("click", () => {
-    // const elem = canvas;
-    const elem = document.body;
+if (isAppleSystem()) {
+    // Hide the fullscreen button on Apple systems.
+    fullscreenBtn.style.display = "none";
+}
+else {
+    // Set up the fullscreen button.
+    fullscreenBtn.addEventListener("click", () => {
+        const elem = document.body;
 
-    if (!document.fullscreenElement) {
-        elem.requestFullscreen().catch(err => { alert(`Failed to enter fullscreen: ${err.message}`); });
-        requestWakeLock();
-    } else {
-        document.exitFullscreen();
-    }
-});
+        if (!document.fullscreenElement) {
+            elem.requestFullscreen().catch(err => { alert(`Failed to enter fullscreen: ${err.message}`); });
+            requestWakeLock();
+        } else {
+            document.exitFullscreen();
+        }
+    });
 
-// Release the wake lock when the user exits fullscreen mode.
-document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-        releaseWakeLock();
-    }
-});
+    // Release the wake lock when the user exits fullscreen mode.
+    document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) {
+            releaseWakeLock();
+        }
+    });
+}
 
-// -----------------------------------------------------------------------------------------------
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 // "Options" button
-// -----------------------------------------------------------------------------------------------
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
 const optionsButton = document.getElementById('options-btn');
 const gearIcon = document.getElementById('gear-icon');
 let rotation = 0;
 
 optionsButton.addEventListener('click', () => {
-    rotation += 60;
-    gearIcon.style.transform = `rotate(${rotation}deg)`;
+    if (isamerionModule == null) return;
+    isamerionModule.respawnScenario();
 });
 
-// -----------------------------------------------------------------------------------------------
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 // "About" button
-// -----------------------------------------------------------------------------------------------
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
 const aboutButton = document.getElementById('about-btn');
 
 aboutButton.addEventListener('click', () => {
-    const aboutText = document.getElementById('about-box');
-    if (aboutText.style.display === 'none' || aboutText.style.display === '') {
-        aboutText.style.display = 'block';
+    const aboutBox = document.getElementById('about-box');
+    if (aboutBox.style.display === 'none' || aboutBox.style.display === '') {
+        aboutBox.style.display = 'block';
     } else {
-        aboutText.style.display = 'none';
+        aboutBox.style.display = 'none';
     }
 });
+
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---

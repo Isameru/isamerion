@@ -1,3 +1,17 @@
+/*
+    MIT License
+    Copyright (c) 2025 Mariusz Łapiński
+
+      ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+      ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+      ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+      ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+      ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+      ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+      ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+      █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+                                                                    ███    ███
+*/
 
 #pragma once
 
@@ -36,7 +50,6 @@ class StarRenderer
     GLShader                  _shader;
     GLShader::UniformLocation _shaderViewTransformLocation;
     GLShader::UniformLocation _shaderProjectionTransformLocation;
-    // GLShader::UniformLocation _shaderColorLocation;
 
     GLBuffer _quadVertexBuffer;
     GLBuffer _particlePosBuffer;
@@ -68,7 +81,6 @@ class SonarRenderer
 
     GLShader                  _shader;
     GLShader::UniformLocation _shaderTransformLocation;
-    // GLShader::UniformLocation _shaderColorLocation;
 
     GLBuffer _coordSystemVertexBuffer;
     GLBuffer _circleVertexBuffer;
@@ -105,8 +117,6 @@ public:
     void updateParticleSizes(const vector<float>& particleSizes);
     void updateParticleColors(const vector<vec3>& particleColors);
     void draw();
-
-private:
 };
 
 // ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---

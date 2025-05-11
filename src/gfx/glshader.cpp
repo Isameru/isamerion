@@ -1,5 +1,21 @@
+/*
+    MIT License
+    Copyright (c) 2025 Mariusz Łapiński
+
+      ▄█     ▄████████    ▄████████    ▄▄▄▄███▄▄▄▄      ▄████████    ▄████████  ▄█   ▄██████▄  ███▄▄▄▄
+      ███    ███    ███   ███    ███  ▄██▀▀▀███▀▀▀██▄   ███    ███   ███    ███ ███  ███    ███ ███▀▀▀██▄
+      ███▌   ███    █▀    ███    ███  ███   ███   ███   ███    █▀    ███    ███ ███▌ ███    ███ ███   ███
+      ███▌   ███          ███    ███  ███   ███   ███  ▄███▄▄▄      ▄███▄▄▄▄██▀ ███▌ ███    ███ ███   ███
+      ███▌ ▀███████████ ▀███████████  ███   ███   ███ ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ███▌ ███    ███ ███   ███
+      ███           ███   ███    ███  ███   ███   ███   ███    █▄  ▀███████████ ███  ███    ███ ███   ███
+      ███     ▄█    ███   ███    ███  ███   ███   ███   ███    ███   ███    ███ ███  ███    ███ ███   ███
+      █▀    ▄████████▀    ███    █▀    ▀█   ███   █▀    ██████████   ███    ███ █▀    ▀██████▀   ▀█   █▀
+                                                                    ███    ███
+*/
 
 #include "gfx/glshader.hpp"
+
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
 
 GLuint compileShader(GLuint shaderType, std::string_view shader)
 {
@@ -22,8 +38,7 @@ GLuint compileShader(GLuint shaderType, std::string_view shader)
         glGetShaderInfoLog(shaderId, errorMessage.size(), &logLength, errorMessage.data());
 
         glDeleteShader(shaderId);
-        std::string_view errorMessageHeader =
-            (shaderType == GL_VERTEX_SHADER) ? "GLSL vertex shader compilation failed: " : "GLSL fragment shader compilation failed: ";
+        std::string_view errorMessageHeader = (shaderType == GL_VERTEX_SHADER) ? "GLSL vertex shader compilation failed: " : "GLSL fragment shader compilation failed: ";
         throw std::runtime_error{std::string{errorMessageHeader} + errorMessage};
     }
 
@@ -96,3 +111,5 @@ GLShader::UniformLocation GLShader::getUniformLocation(std::string_view name)
 }
 
 void GLShader::setUniform(UniformLocation location, const mat4& value) { glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]); }
+
+// ---―--―-――-―――-―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-―――-――-―--―---
